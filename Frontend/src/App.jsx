@@ -7,11 +7,12 @@ import CitizenPage from './Components/Citizen/CitizenPage';
 import Police from './Components/lawenf/police';
 import PoliceNext from './Components/lawenf/policeNext';
 import AdminDashboard from './Components/admin/admin';
+import LoginSignup from './Components/Login/LoginSignup';
 
 function App() {
   return(
     <Routes>
-      <Route path='/' element={< Basic/>} />
+      <Route path='/' element={< LoginSignup/>} />
       <Route path='/login' element={< LoginForm/>} />
       <Route path='/signup' element={<SignupForm/>} />
       <Route path='/citizen' element={<CitizenPage/>} />

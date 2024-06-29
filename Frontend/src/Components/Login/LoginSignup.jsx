@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import React, { useState } from 'react';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 
@@ -11,8 +11,10 @@ const LoginSignup = () => {
     console.log('Submitted form data');
   };
 
-  const toggleFormType = () => {
+  const toggleFormType = (e) => {
+    e.preventDefault();
     setIsLogin(!isLogin);
+    window.history.pushState({}, '', isLogin ? '/signup' : '/login');
   };
 
   return (
@@ -23,9 +25,9 @@ const LoginSignup = () => {
       {isLogin ? <LoginForm onSubmit={handleFormSubmit} /> : <SignupForm onSubmit={handleFormSubmit} />}
       <p className="text-center mt-4">
         {isLogin ? "Don't have an account?" : 'Already have an account?'}
-        <button onClick={toggleFormType} className="text-blue-500 hover:text-blue-700">
+        <a href={isLogin ? '/signup' : '/login'} onClick={toggleFormType} className="text-blue-500 hover:text-blue-700">
           {isLogin ? 'Sign Up' : 'Login'}
-        </button>
+        </a>
       </p>
     </div>
   );
