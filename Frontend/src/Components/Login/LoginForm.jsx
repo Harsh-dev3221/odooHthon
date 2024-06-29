@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = ({ onSubmit }) => {
 
   const[username , setUsername] = useState('')
   const[password, setPassword] = useState('')
+
+
+  const navigate = useNavigate();
 
   const handelChange = (e) =>{
     const { name, value } = e.target;
@@ -24,6 +27,7 @@ const LoginForm = ({ onSubmit }) => {
       // credentials: 'include'
     })
     if(response.ok){
+      navigate('/');
       console.log('Cred sent')
     }else{
       console.log('Not sent')

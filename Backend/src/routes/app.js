@@ -5,14 +5,19 @@ const mongoose = require('mongoose');
 const config = require('../../../config');
 const User = require('../models/User')
 const bcrypt = require('bcryptjs')
-
+const jwt = require('jsonwebtoken')
+const cookieParser = require('cookie-parser')
 
 
 const port = process.env.PORT || 8080;
 const app = express();
 const mongoURI = config.mongoURI;
+const sec = '47qc65noqieal674tinsxjknfakqwjr;odkw589p8'
 
-// mongoose.connect('mongodb://localhost:27017/newApp')
+app.use(cookieParser())
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 mongoose.connect(mongoURI, {
     useNewUrlParser: true,
@@ -59,6 +64,13 @@ app.post('/login',async (req,res)=>{
         }
         const validatePassword = await bcrypt.compare(password,user.password)
         if(validatePassword){
+            jwt.sign({username,id:user._id}, sec, {}, (err,token)=>{
+                if(err) throw(err)
+                res.cookie('token',token).json({
+                    id : user._id,
+                    username,
+                })
+            })
             console.log('logged in')
         }
     } catch (error) {
@@ -84,6 +96,12 @@ app.post('/signup', async (req, res) => {
       res.status(500).json({ message: 'Error creating user', error: error.message });
     }
 })
+
+
+app.post('/logout',(req,res)=>{
+    res.cookie('token','').json('ok')
+})
+
 
 
 
