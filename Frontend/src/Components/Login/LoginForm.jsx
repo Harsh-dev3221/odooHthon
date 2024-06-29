@@ -1,3 +1,37 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+const handleLogin = async (event) => {
+  // ... login logic ...
+  const userData = await fetchUserData(); // Replace with your logic
+
+  if (!userData) {
+    // Handle login failure
+    return;
+  }
+
+  setIsLoggedIn(true);
+  setUserData(userData);
+  navigate(getRedirectPath(userData)); // Redirect based on isAdmin
+};
+
+// Function to determine redirect path based on isAdmin
+const getRedirectPath = (userData) => {
+  const { isAdmin } = userData;
+
+  switch (isAdmin) {
+    case 0:
+      return "/citizen";
+    case 1:
+      return "/lawenforcement";
+    case 2:
+      return "/admin";
+    default:
+      console.error("Unexpected isAdmin value:", isAdmin);
+      return "/error"; // Redirect to error page (optional)
+  }
+};
+
 const LoginForm = ({ onSubmit }) => {
   return (
     <form onSubmit={onSubmit} className="w-full max-w-md space-y-4">

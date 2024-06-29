@@ -1,7 +1,5 @@
 import LoginSignup from "./Components/Login/LoginSignup";
 
- 
-
 
 function App() {
   return (
