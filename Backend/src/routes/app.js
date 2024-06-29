@@ -12,12 +12,15 @@ const port = process.env.PORT || 8080;
 const app = express();
 const mongoURI = config.mongoURI;
 
+// mongoose.connect('mongodb://localhost:27017/newApp')
+
 mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('MongoDB Connected'))
-.catch(err => console.log(err));
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }) // Corrected dbName option
+  .then(() => console.log('MongoDB Connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
 
 // Middleware
 app.use(bodyParser.json());
@@ -47,27 +50,40 @@ app.get('/', (req, res) => {
 });
 
 
-app.post('/login',(req,res)=>{
-    const {username,password} = req.body;
-    console.log(username, password);
-})
-
-app.post('/signup',async (req,res)=>{
-    console.log("into signuo")
-    const {email,username,password} = req.body;
+app.post('/login',async (req,res)=>{
+    const {username, password} = req.body;
     try {
-        const hasedPassword = await bcrypt.hash(password, salt);
-        const user = await  User.create(username,hasedPassword,email)
-        console.log(user);
-
+        const user = await User.findOne({username})
+        if(!user){
+            console.log('User not found');
+        }
+        const validatePassword = await bcrypt.compare(password,user.password)
+        if(validatePassword){
+            console.log('logged in')
+        }
     } catch (error) {
-        console.log(error)
+        console.log(error)        
     }
 
-
-    // console.log(email,username,password)
 })
 
+app.post('/signup', async (req, res) => {
+    console.log("into signup");
+    const { email, username, password } = req.body;
+    try {
+      const hashedPassword = await bcrypt.hash(password, salt);
+      const user = await User.create({
+        username: username,
+        password: hashedPassword,
+        email: email
+      });
+      console.log(user);
+      res.status(201).json({ message: 'User created successfully', user });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Error creating user', error: error.message });
+    }
+})
 
 
 
